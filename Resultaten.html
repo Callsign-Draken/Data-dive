@@ -74,7 +74,9 @@
                         ],
                         borderColor: "blue",
                         backgroundColor: "blue",
-                        tension: 0.3
+                        tension: 0.3,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
                     },
                     {
                         label: "Gemiddelde volwassenen Noord-Nederland",
@@ -89,7 +91,8 @@
                         borderColor: "orange",
                         backgroundColor: "orange",
                         borderDash: [5, 5],
-                        tension: 0.3
+                        tension: 0.3,
+                        pointRadius: 0
                     }
                 ]
             };
@@ -101,7 +104,29 @@
                     responsive: true,
                     plugins: {
                         legend: { position: "top" },
-                        title: { display: true, text: "Jouw antwoorden vs. Gemiddelde volwassenen Noord-Nederland" }
+                        title: { display: true, text: "Jouw antwoorden vs. Gemiddelde volwassenen Noord-Nederland" },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    if (context.dataset.label === "Jouw antwoorden") {
+                                        const index = context.dataIndex;
+                                        const gemiddelde = [
+                                            noordGemiddelde.groente,
+                                            noordGemiddelde.fruit,
+                                            noordGemiddelde.frisdrank,
+                                            noordGemiddelde.gewicht,
+                                            noordGemiddelde.alcohol,
+                                            noordGemiddelde.beweging
+                                        ][index];
+                                        const waarde = context.raw;
+                                        const verschil = ((waarde - gemiddelde) / gemiddelde * 100).toFixed(1);
+                                        return `${verschil}% van het gemiddelde`;
+                                    } else {
+                                        return null;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             });
