@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Voedingsvragenlijst</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa, #e3f2fd);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Groot hart */
+        .hart {
+            position: absolute;
+            top: 50%;
+            right: 15%;
+            width: 200px;
+            height: 180px;
+            background: #e63946;
+            transform: rotate(-45deg) translateY(-50%);
+            transform-origin: center;
+            opacity: 0.2;
+            transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
+        }
+
+        .hart:before,
+        .hart:after {
+            content: "";
+            position: absolute;
+            width: 200px;
+            height: 180px;
+            background: #e63946;
+            border-radius: 50%;
+        }
+
+        .hart:before {
+            top: -100px;
+            left: 0;
+        }
+
+        .hart:after {
+            left: 100px;
+            top: 0;
+        }
+
+        .pulse {
+            transform: rotate(-45deg) translateY(-50%) scale(1.2);
+            opacity: 0.35;
+        }
+    </style>
+</head>
+
+<body class="p-4 justify-content-center">
+    <div class="hart" id="hart"></div>
+
+    <div class="container justify-content-center">
+        <h2 class="mb-4">Voedingsvragenlijst</h2>
+        <form id="voedingForm">
+            <p class="mb-2">Wat is je geslacht?</p>
+            <div class="container my-2">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="geslacht" id="man" value="man" required>
+                    <label class="form-check-label" for="man">Man</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="geslacht" id="vrouw" value="vrouw">
+                    <label class="form-check-label" for="vrouw">Vrouw</label>
+                </div>
+            </div>
+
+            <div class="col-3">
+                <label for="lengte" class="form-label">Hoe lang ben je? (cm)</label>
+                <input type="number" class="form-control" id="lengte" min="0" max="220" required>
+            </div>
+
+            <div class="col-3">
+                <label for="zwaar" class="form-label">Hoe zwaar ben je? (kg)</label>
+                <input type="number" class="form-control" id="zwaar" min="0" max="150" required>
+            </div>
+
+            <div class="col-3">
+                <label for="heup" class="form-label">Wat is je omtrek van je heup? (cm)</label>
+                <input type="number" class="form-control" id="heup" min="0" max="150" required>
+            </div>
+
+            <div class="col-3">
+                <label for="middel" class="form-label">Wat is je omtrek van je middel? (cm)</label>
+                <input type="number" class="form-control" id="middel" min="0" max="250" required>
+            </div>
+
+            <div class="col-3">
+                <label for="suikers" class="form-label">Hoeveel gram suikers eet je ongeveer per dag?</label>
+                <input type="number" class="form-control" id="suikers" min="0" max="250" required>
+            </div>
+
+            <p class="mb-2">Hoeveel kcal eet je ongeveer per dag?</p>
+            <div class="container my-2">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="beweging" id="beweging1" value="1" required>
+                    <label class="form-check-label" for="beweging1">0-1000</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="beweging" id="beweging3" value="2">
+                    <label class="form-check-label" for="beweging3">1000-1500</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="beweging" id="beweging4" value="3">
+                    <label class="form-check-label" for="beweging4">1500-2000</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="beweging" id="beweging5" value="4">
+                    <label class="form-check-label" for="beweging5">2000-2500</label>
+                </div>
+            </div>
+
+            <p class="mb-2">Hoeveel alcohol drink je ongeveer per week?</p>
+            <div class="container my-2">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="alcohol" id="alcohol1" value="1" required>
+                    <label class="form-check-label" for="alcohol1">0</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="alcohol" id="alcohol2" value="2">
+                    <label class="form-check-label" for="alcohol2">1-3</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="alcohol" id="alcohol3" value="3">
+                    <label class="form-check-label" for="alcohol3">3-6</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="alcohol" id="alcohol4" value="4">
+                    <label class="form-check-label" for="alcohol4">elke dag</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Versturen!</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("voedingForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const kcalOptions = {
+                1: 1000,
+                2: 1500,
+                3: 2000,
+                4: 2500
+            };
+
+            const alcoholOptions = {
+                1: 0,
+                2: 2,
+                3: 5,
+                4: 7
+            };
+
+            const geslacht = document.querySelector('input[name="geslacht"]:checked')?.value;
+            const kcalInput = document.querySelector('input[name="beweging"]:checked')?.value;
+            const alcoholInput = document.querySelector('input[name="alcohol"]:checked')?.value;
+
+            const data = {
+                geslacht: geslacht,
+                lengte: parseInt(document.getElementById("lengte").value),
+                gewicht: parseInt(document.getElementById("zwaar").value),
+                heup: parseInt(document.getElementById("heup").value),
+                middel: parseInt(document.getElementById("middel").value),
+                suikers: parseInt(document.getElementById("suikers").value),
+                kcal: kcalInput ? kcalOptions[kcalInput] : 0,
+                alcohol: alcoholInput ? alcoholOptions[alcoholInput] : 0
+            };
+
+            localStorage.setItem("voedingData", JSON.stringify(data));
+
+            window.location.href = "resultaat.html";
+        });
+
+        const hart = document.getElementById("hart");
+        setInterval(() => {
+            hart.classList.toggle("pulse");
+        }, 800);
+    </script>
+</body>
+
+</html>

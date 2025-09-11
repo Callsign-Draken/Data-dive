@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Voedingsresultaten</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="p-4">
+    <div class="container">
+        <h2 class="mb-4 text-center">Jouw Voedingsresultaten</h2>
+
+        <table class="table table-bordered mb-5">
+            <thead class="table-dark">
+                <tr>
+                    <th>Lengte (cm)</th>
+                    <th>Gewicht (kg)</th>
+                    <th>Heupomtrek (cm)</th>
+                    <th>Middelomtrek (cm)</th>
+                    <th>Suikers/dag (g)</th>
+                    <th>Kcal/dag</th>
+                    <th>Alcohol/week</th>
+                </tr>
+            </thead>
+            <tbody id="tabelBody"></tbody>
+        </table>
+
+        <h3 class="mb-3 text-center">Afwijking t.o.v. gemiddelde</h3>
+        <canvas id="voedingChart"></canvas>
+    </div>
+
+    <script>
+    const data = JSON.parse(localStorage.getItem("voedingData"));
+
+    if (!data) {
+        document.getElementById("tabelBody").innerHTML =
+            `<tr><td colspan="7" class="text-center">Geen gegevens gevonden</td></tr>`;
+    } else {
+        const gemiddeldeM = { lengte: 175, gewicht: 80, heup: 98, middel: 89, suikers: 37, kcal: 1900, alcohol: 8 };
+        const gemiddeldeV = { lengte: 165, gewicht: 65, heup: 95, middel: 75, suikers: 30, kcal: 1800, alcohol: 5 };
+
+        const labels = ["Lengte", "Gewicht", "Heupomtrek", "Middelomtrek", "Suikers/dag", "Kcal/dag", "Alcohol/week"];
+
+        const gemiddelde = data.geslacht === "vrouw" ? gemiddeldeV : gemiddeldeM;
+
+        function getClass(value, avg) {
+            if (value < avg) return 'under';
+            if (value > avg) return 'over';
+            return 'average';
+        }
+
+        document.getElementById("tabelBody").innerHTML = `
+        <tr>
+            <td class="${getClass(data.lengte, gemiddelde.lengte)}">${data.lengte}</td>
+            <td class="${getClass(data.gewicht, gemiddelde.gewicht)}">${data.gewicht}</td>
+            <td class="${getClass(data.heup, gemiddelde.heup)}">${data.heup}</td>
+            <td class="${getClass(data.middel, gemiddelde.middel)}">${data.middel}</td>
+            <td class="${getClass(data.suikers, gemiddelde.suikers)}">${data.suikers}</td>
+            <td class="${getClass(data.kcal, gemiddelde.kcal)}">${data.kcal}</td>
+            <td class="${getClass(data.alcohol, gemiddelde.alcohol)}">${data.alcohol}</td>
+        </tr>
+        `;
+
+        new Chart(document.getElementById("voedingChart"), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: "Mannen Gemiddelde",
+                        data: Object.values(gemiddeldeM),
+                        borderColor: 'blue',
+                        borderWidth: 2,
+                        tension: 0.3
+                    },
+                    {
+                        label: "Vrouwen Gemiddelde",
+                        data: Object.values(gemiddeldeV),
+                        borderColor: 'pink',
+                        borderWidth: 2,
+                        tension: 0.3
+                    },
+                    {
+                        label: "Jouw waarden",
+                        data: [
+                            data.lengte,
+                            data.gewicht,
+                            data.heup,
+                            data.middel,
+                            data.suikers,
+                            data.kcal,
+                            data.alcohol
+                        ],
+                        borderColor: 'green',
+                        borderWidth: 5,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return `${context.dataset.label}: ${context.raw}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>
