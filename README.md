@@ -1,2 +1,3 @@
 # Data-dive
-Noorderpoort deep dive jaar 2 Data LifeLines
+Lifelines deepdive data analyse vragenlijst
+we hebbe een vragenlijst gemaakt en als je die invult kan je zien of je boven of onder het gemiddelde zit.
